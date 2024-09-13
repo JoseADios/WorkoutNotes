@@ -37,7 +37,7 @@ class superset(models.Model):
 
 
 class set(models.Model):
-    set_group = models.ForeignKey('set_group', on_delete=models.CASCADE, blank=True, null=True)
+    setgroup = models.ForeignKey('setgroup', on_delete=models.CASCADE, blank=True, null=True)
     reps = models.IntegerField(blank=True, null=True)
     weight = models.IntegerField(blank=True, null=True)
     time = models.IntegerField(blank=True, null=True)
@@ -48,7 +48,7 @@ class set(models.Model):
     def __str__(self):
         return self.excersice.name + ' ' + str(self.reps)
 
-class set_group(models.Model):
+class setgroup(models.Model):
     workout = models.ForeignKey('workout', on_delete=models.CASCADE)
     excersice = models.ForeignKey('excersice', on_delete=models.DO_NOTHING)
     superset = models.ForeignKey('superset', on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -58,14 +58,14 @@ class set_group(models.Model):
     def save(self, *args, **kwargs):
         if not self.order:
             try:
-                last_order = set_group.objects.filter(set_group=self.set_group).latest('order').order
+                last_order = setgroup.objects.filter(setgroup=self.setgroup).latest('order').order
                 self.order = last_order + 1
-            except set_group.DoesNotExist:
+            except setgroup.DoesNotExist:
                 self.order = 1
         super().save(*args, **kwargs)
     
     def clean(self):
-        if set_group.objects.filter(set_group=self.set_group, order=self.order).exists():
+        if setgroup.objects.filter(setgroup=self.setgroup, order=self.order).exists():
             raise ValidationError('El orden ya existe en este set group')
     
     class Meta:
