@@ -46,7 +46,7 @@ class set(models.Model):
     date = models.DateField(auto_now_add=True)
     
     def __str__(self):
-        return self.excersice.name + ' ' + str(self.reps)
+        return f'{self.setgroup.excersice.name} - {self.reps} x {self.weight} kg'
 
 class setgroup(models.Model):
     workout = models.ForeignKey('workout', on_delete=models.CASCADE)
@@ -55,18 +55,6 @@ class setgroup(models.Model):
     order = models.IntegerField(default=1)
     notes = models.TextField(max_length=200, blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        if not self.order:
-            try:
-                last_order = setgroup.objects.filter(setgroup=self.setgroup).latest('order').order
-                self.order = last_order + 1
-            except setgroup.DoesNotExist:
-                self.order = 1
-        super().save(*args, **kwargs)
-    
-    def clean(self):
-        if setgroup.objects.filter(setgroup=self.setgroup, order=self.order).exists():
-            raise ValidationError('El orden ya existe en este set group')
     
     class Meta:
         unique_together = ('workout', 'order')
