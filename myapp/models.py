@@ -6,11 +6,14 @@ from django.core.exceptions import ValidationError
 class workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     notes = models.TextField(max_length=200, blank=True, null=True)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.date.strftime('%Y-%m-%d %H:%M:%S')
            
 
 class muscle(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(unique=True, max_length=100)
     description = models.TextField(max_length=200, blank=True, null=True)
     img = models.CharField(max_length=100, blank=True, null=True)
     active = models.BooleanField(default=True)
@@ -20,9 +23,35 @@ class muscle(models.Model):
     
 
 class excersice(models.Model):
+    
+    WEIGHT_REPS = 'W_R'
+    DISTANCE_TIME = 'D_T'
+    WEIGHT_DISTANCE = 'W_D'
+    WEIGHT_TIME = 'W_T'
+    REPS_DISTANCE = 'R_D'
+    REPS_TIME = 'R_T'
+    WEIGHT = 'W'
+    REPS = 'R'
+    DISTANCE = 'D'
+    TIME = 'T'
+    
+    EXCERSICE_TYPE_CHOICES = (
+        (WEIGHT_REPS, 'Weight and Reps'),
+        (DISTANCE_TIME, 'Distance and Time'),
+        (WEIGHT_DISTANCE, 'Weight and Distance'),
+        (WEIGHT_TIME, 'Weight and Time'),
+        (REPS_DISTANCE, 'Reps and Distance'),
+        (REPS_TIME, 'Reps and Time'),
+        (WEIGHT, 'Weight'),
+        (REPS, 'Reps'),
+        (DISTANCE, 'Distance'),
+        (TIME, 'Time'),
+    )
+    
     muscle = models.ManyToManyField('muscle')
-    name = models.CharField(max_length=100)
+    name = models.CharField(unique=True, max_length=100)
     description = models.TextField(max_length=200, blank=True, null=True)
+    type = models.CharField(max_length=3, choices=EXCERSICE_TYPE_CHOICES, default=WEIGHT_REPS)
     active = models.BooleanField(default=True)
     
     def __str__(self):
@@ -42,6 +71,7 @@ class set(models.Model):
     weight = models.IntegerField(blank=True, null=True)
     time = models.IntegerField(blank=True, null=True)
     distance = models.FloatField(blank=True, null=True)
+    rir = models.IntegerField(default=1)
     notes = models.TextField(max_length=200, blank=True, null=True)
     date = models.DateField(auto_now_add=True)
     

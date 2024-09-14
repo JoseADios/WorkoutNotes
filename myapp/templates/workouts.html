@@ -1,1 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h1>Workouts</h1>
+
+
+{% for setgroup in setgroups %}
+<h1>Workout: {{setgroup.workout.date}}</h1>
+<h2>SetGroup: {{setgroup.excersice.name}}</h2>
+
+    {% for set in setgroup.set_set.all %}
+        <p>{{set}}</p>
+    {% endfor %}
+{% endfor %}
+
+{% endblock content %}
