@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from myapp.models import workout
+from django.utils import timezone
+from django.db.models.functions import Cast
+from django.db.models import DateField
+
 
 # Create your views here.
 
@@ -23,7 +27,17 @@ def workout_detail(request, id):
 def create_workout(request):
     if request.method == 'GET':
         # si no hay workout para ese dia crea uno
+        today = timezone.now().date()
+
+        todayWork = workout.objects.annotate(date__only=Cast('date', DateField())).filter(date__only=today)
         
-        return render(request, 'workouts/create_workout.html', {})
+        if not todayWork:
+            print('no hay workout para ese dia')
+            workout.objects.create(user=request.user)
+        
+        
+        return render(request, 'workouts/create_workout.html', {
+            'wdate': todayWork
+        })
     else:
         return render(request, 'workouts/create_workout.html', {})
