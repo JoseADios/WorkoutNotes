@@ -1,0 +1,18 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<h1>Workouts</h1>
+
+{% for workout in workouts %}
+<a href="{% url 'workout_detail' workout.id %}">
+    <h2>Workout: {{workout}}</h2>
+</a>
+
+{% for setgroup in workout.setgroup_set.all %}
+<h3>SetGroup: {{setgroup.excersice.name}}</h3>
+
+{% endfor %}
+{% endfor %}
+
+{% endblock content %}

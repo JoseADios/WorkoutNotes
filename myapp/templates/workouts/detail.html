@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+<h1>Workout: {{workout}}</h1>
+<h2>Notes: {{workout.notes}}</h2>
+
+{% for setgroup in workout.setgroup_set.all %}
+<h3>SetGroup: {{setgroup.excersice.name}}</h3>
+
+    {% for set in setgroup.set_set.all %}
+        <p>{{set}}</p>
+    {% endfor %}
+
+
+{% endfor %}
+
+{% endblock content %}
