@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from myapp.models import workout, setgroup
-# from django.utils import timezone
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
 from .forms import CreateSetGroupForm
+from django.views.generic.edit import DeleteView
 
 # Create your views here.
 
@@ -63,4 +63,12 @@ def create_setgroup(request, workout_id, order):
         print(request.POST)
         setgroup.objects.create(
             workout_id=workout_id, exercise_id=request.POST['exercise'], notes=request.POST['notes'], order=order)
+        
+        return redirect('workout_detail', workout_id)
 
+
+def delete_setgroup(request, pk):
+    workout_id = get_object_or_404(setgroup, id=pk).workout.id
+    setgroup.objects.get(id=pk).delete()
+    print('deleted')
+    return redirect('workout_detail', workout_id)

@@ -12,6 +12,8 @@
 {% for setgroup in workout.setgroup_set.all %}
 <h3>SetGroup: {{setgroup.exercise.name}}</h3>
 
+<button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button>
+
 {% for set in setgroup.set_set.all %}
 <p>
     <input type="num" hidden name="id_set">
