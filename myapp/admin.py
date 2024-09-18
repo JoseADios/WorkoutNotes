@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import exersice, workout, muscle, set, setgroup, superset
+from .models import exercise, workout, muscle, set, setgroup, superset
 
 # Register your models here.
-admin.site.register(exersice)
+admin.site.register(exercise)
 admin.site.register(workout)
 admin.site.register(muscle)
 admin.site.register(set)
