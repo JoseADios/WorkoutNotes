@@ -1,15 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+# from django.utils import timezone
+from datetime import datetime
 
 # Create your models here.
 class workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     notes = models.TextField(max_length=200, blank=True, null=True)
-    date = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=datetime.now)
     
     def __str__(self):
-        return self.date.strftime('%d-%m-%Y %H:%M:%S')
+        return self.created_at.strftime('%d-%m-%Y %H:%M:%S')
            
 
 class muscle(models.Model):
@@ -22,7 +23,7 @@ class muscle(models.Model):
         return self.name
     
 
-class excersice(models.Model):
+class exersice(models.Model):
     
     WEIGHT_REPS = 'W_R'
     DISTANCE_TIME = 'D_T'
@@ -35,7 +36,7 @@ class excersice(models.Model):
     DISTANCE = 'D'
     TIME = 'T'
     
-    EXCERSICE_TYPE_CHOICES = (
+    EXERSICE_TYPE_CHOICES = (
         (WEIGHT_REPS, 'Weight and Reps'),
         (DISTANCE_TIME, 'Distance and Time'),
         (WEIGHT_DISTANCE, 'Weight and Distance'),
@@ -51,7 +52,7 @@ class excersice(models.Model):
     muscle = models.ManyToManyField('muscle')
     name = models.CharField(unique=True, max_length=100)
     description = models.TextField(max_length=200, blank=True, null=True)
-    type = models.CharField(max_length=3, choices=EXCERSICE_TYPE_CHOICES, default=WEIGHT_REPS)
+    type = models.CharField(max_length=3, choices=EXERSICE_TYPE_CHOICES, default=WEIGHT_REPS)
     active = models.BooleanField(default=True)
     
     def __str__(self):
@@ -76,11 +77,11 @@ class set(models.Model):
     date = models.DateField(auto_now_add=True)
     
     def __str__(self):
-        return f'{self.setgroup.excersice.name} - {self.reps} x {self.weight} kg'
+        return f'{self.setgroup.exersice.name} - {self.reps} x {self.weight} kg'
 
 class setgroup(models.Model):
     workout = models.ForeignKey('workout', on_delete=models.CASCADE)
-    excersice = models.ForeignKey('excersice', on_delete=models.DO_NOTHING)
+    exersice = models.ForeignKey('exersice', on_delete=models.DO_NOTHING)
     superset = models.ForeignKey('superset', on_delete=models.DO_NOTHING, blank=True, null=True)
     order = models.IntegerField(default=1)
     notes = models.TextField(max_length=200, blank=True, null=True)
@@ -90,5 +91,5 @@ class setgroup(models.Model):
         unique_together = ('workout', 'order')
         
     def __str__(self):
-        return self.excersice.name
+        return self.exersice.name
     

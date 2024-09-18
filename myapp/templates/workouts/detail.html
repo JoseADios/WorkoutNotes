@@ -3,15 +3,42 @@
 
 {% block content %}
 
-<h1>Workout: {{workout}}</h1>
+<h1>Workout: {{workout.created_at}}</h1>
 <h2>Notes: {{workout.notes}}</h2>
 
-{% for setgroup in workout.setgroup_set.all %}
-<h3>SetGroup: {{setgroup.excersice.name}}</h3>
+<!-- url 'create_setgroup' workout.id, 1-->
+<button><a href="{% url 'create_setgroup' workout.id 5 %}">➕ Add exersice</a></button>
 
-    {% for set in setgroup.set_set.all %}
-        <p>{{set}}</p>
-    {% endfor %}
+{% for setgroup in workout.setgroup_set.all %}
+<h3>SetGroup: {{setgroup.exersice.name}}</h3>
+
+{% for set in setgroup.set_set.all %}
+<p>
+    <input type="num" hidden name="id_set">
+    <input type="num" name="weight" value="{{set.weight}}">
+    <label for="weight">Weight</label>
+    <input type="num" name="reps" value="{{set.reps}}">
+    <label for="reps">Reps</label>
+
+
+    <button><a href="">☑️ Update</a></button>
+    <button><a href="">❌ Delete</a></button>
+
+</p>
+
+{% endfor %}
+
+<p>
+    <input type="num" name="weight">
+    <label for="weight">Weight</label>
+    <input type="num" name="reps">
+    <label for="reps">Reps</label>
+
+    <button><a href="">☑️ Save </a></button>
+    <button><a href="">❌ Cancel</a></button>
+</p>
+
+
 
 
 {% endfor %}
