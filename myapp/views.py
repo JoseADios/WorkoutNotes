@@ -21,9 +21,18 @@ def workouts(request):
 
 def workout_detail(request, id):
     if request.method == 'POST':
-        set.objects.create(
-            setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
-        )
+        if 'save_set' in request.POST: 
+            set.objects.create(
+                setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
+            )
+        elif 'update_set' in request.POST: 
+            print(request.POST)
+            set_obj = get_object_or_404(set, id=request.POST['set_id'])
+            set_obj.reps = request.POST['reps']
+            set_obj.weight=request.POST['weight']
+            
+            set_obj.save()
+            
         return redirect('workout_detail', id)
 
     elif request.method == 'GET':
@@ -50,13 +59,8 @@ def create_workout(request):
 
         if not todayWork:
             todayWork = workout.objects.create(user=request.user)
-
-        order = setgroup.objects.filter(workout=todayWork).count() + 1
-
-        return render(request, 'workouts/detail.html', {
-            'workout': todayWork,
-            'order': order
-        })
+            
+        return redirect('workout_detail', todayWork.id)
 
     elif request.method == 'POST':
         return render(request, 'workouts/create_workout.html', {})
