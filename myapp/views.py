@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from myapp.models import workout, setgroup
+from myapp.models import workout, setgroup, set
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
-from .forms import CreateSetGroupForm
-from django.views.generic.edit import DeleteView
+from .forms import CreateSetGroupForm, CreateSetForm
 
 # Create your views here.
 
@@ -20,12 +19,22 @@ def workouts(request):
 
 
 def workout_detail(request, id):
-    workout_object = workout.objects.get(id=id)
-    order = setgroup.objects.filter(workout=workout_object).count() + 1
+    if request.method == 'POST':
+        set.objects.create(
+            setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
+        )
+        print(request.POST)
+        return redirect('workout_detail', id)
 
-    return render(request, 'workouts/detail.html', {
-        'workout': workout_object,
-        'order': order})
+    elif request.method == 'GET':
+        workout_object = workout.objects.get(id=id)
+        order = setgroup.objects.filter(workout=workout_object).count() + 1
+
+        return render(request, 'workouts/detail.html', {
+            'workout': workout_object,
+            'order': order,
+            'set_form': CreateSetForm()
+            })
 
 
 def create_workout(request):
@@ -60,7 +69,6 @@ def create_setgroup(request, workout_id, order):
         })
 
     elif request.method == 'POST':
-        print(request.POST)
         setgroup.objects.create(
             workout_id=workout_id, exercise_id=request.POST['exercise'], notes=request.POST['notes'], order=order)
         
@@ -72,3 +80,4 @@ def delete_setgroup(request, pk):
     setgroup.objects.get(id=pk).delete()
     print('deleted')
     return redirect('workout_detail', workout_id)
+

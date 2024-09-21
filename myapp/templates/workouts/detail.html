@@ -16,29 +16,26 @@
 
 {% for set in setgroup.set_set.all %}
 <p>
-    <input type="num" hidden name="id_set">
     <input type="num" name="weight" value="{{set.weight}}">
     <label for="weight">Weight</label>
     <input type="num" name="reps" value="{{set.reps}}">
     <label for="reps">Reps</label>
 
 
-    <button><a href="">☑️ Update</a></button>
-    <button><a href="">❌ Delete</a></button>
+    <button>☑️ Update</a></button>
+    <button>❌ Delete</a></button>
 
 </p>
 
 {% endfor %}
 
-<p>
-    <input type="num" name="weight">
-    <label for="weight">Weight</label>
-    <input type="num" name="reps">
-    <label for="reps">Reps</label>
-
-    <button><a href="">☑️ Save </a></button>
-    <button><a href="">❌ Cancel</a></button>
-</p>
+<form method="post">
+    {% csrf_token %}
+    {{ set_form.as_p }}
+    <input type="num" hidden name="setgroup_id" value="{{setgroup.id}}">
+    <button name="submit_set" type="submit">☑️ Save </button>
+    <button>❌ Cancel </a></button>
+</form>
 
 
 
