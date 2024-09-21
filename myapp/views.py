@@ -7,6 +7,7 @@ from .forms import CreateSetGroupForm, CreateSetForm
 
 # Create your views here.
 
+WORKOUT = 1
 
 def hello(request):
     return render(request, 'index.html')
@@ -23,7 +24,6 @@ def workout_detail(request, id):
         set.objects.create(
             setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
         )
-        print(request.POST)
         return redirect('workout_detail', id)
 
     elif request.method == 'GET':
@@ -78,6 +78,9 @@ def create_setgroup(request, workout_id, order):
 def delete_setgroup(request, pk):
     workout_id = get_object_or_404(setgroup, id=pk).workout.id
     setgroup.objects.get(id=pk).delete()
-    print('deleted')
     return redirect('workout_detail', workout_id)
 
+
+def delete_set(request, pk, workout_id):
+    set.objects.get(id=pk).delete()
+    return redirect('workout_detail', workout_id)
