@@ -46,7 +46,8 @@
 
 {% endfor %}
 
+{{error}}
 
-<button><a href="{% url 'create_setgroup' workout.id order %}">➕ Add exercise</a></button>
+<button><a href="{% url 'create_setgroup' workout.id %}">➕ Add exercise</a></button>
 
 {% endblock content %}

@@ -37,11 +37,9 @@ def workout_detail(request, id):
 
     elif request.method == 'GET':
         workout_object = workout.objects.get(id=id)
-        order = setgroup.objects.filter(workout=workout_object).count() + 1
 
         return render(request, 'workouts/detail.html', {
             'workout': workout_object,
-            'order': order,
             'set_form': CreateSetForm()
             })
 
@@ -66,13 +64,16 @@ def create_workout(request):
         return render(request, 'workouts/create_workout.html', {})
 
 
-def create_setgroup(request, workout_id, order):
+def create_setgroup(request, workout_id):
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
             'form': CreateSetGroupForm()
         })
 
     elif request.method == 'POST':
+        # validar que no exista ese ejercicio
+        order = setgroup.objects.filter(workout=workout_id).count() + 1
+        
         setgroup.objects.create(
             workout_id=workout_id, exercise_id=request.POST['exercise'], notes=request.POST['notes'], order=order)
         

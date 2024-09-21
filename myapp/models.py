@@ -87,8 +87,8 @@ class setgroup(models.Model):
     notes = models.TextField(max_length=200, blank=True, null=True)
 
     
-    class Meta:
-        unique_together = ('workout', 'order')
+    # class Meta:
+    #     unique_together = ('workout', 'order')
         
     def __str__(self):
         return self.exercise.name
