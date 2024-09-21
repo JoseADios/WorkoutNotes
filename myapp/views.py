@@ -42,7 +42,7 @@ def workout_detail(request, id):
         return render(request, 'workouts/detail.html', {
             'workout': workout_object,
             'set_form': CreateSetForm()
-            })
+        })
 
 
 def create_workout(request):
@@ -66,6 +66,7 @@ def create_workout(request):
 
 
 def create_setgroup(request, workout_id):
+    error = ''
 
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
@@ -78,16 +79,20 @@ def create_setgroup(request, workout_id):
 
         print(request.POST)
 
-        if form.is_valid():
+        try:
             setgroup_instance = form.save(commit=False)
             setgroup_instance.workout_id = workout_id
             setgroup_instance.order = order
             setgroup_instance.save()
-        else:
-            print(form.errors)
             
-        return redirect('workout_detail', workout_id)
-        
+            return redirect('workout_detail', workout_id)
+        except:
+            error = f'Error, el ejercicio ya existe: {form.errors}'
+
+        return render(request, 'setgroups/create.html', {
+            'form': form,
+            'error': error
+        })
 
 
 def delete_setgroup(request, pk):
