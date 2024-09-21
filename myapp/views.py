@@ -9,6 +9,7 @@ from .forms import CreateSetGroupForm, CreateSetForm
 
 WORKOUT = 1
 
+
 def hello(request):
     return render(request, 'index.html')
 
@@ -21,18 +22,18 @@ def workouts(request):
 
 def workout_detail(request, id):
     if request.method == 'POST':
-        if 'save_set' in request.POST: 
+        if 'save_set' in request.POST:
             set.objects.create(
                 setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
             )
-        elif 'update_set' in request.POST: 
+        elif 'update_set' in request.POST:
             print(request.POST)
             set_obj = get_object_or_404(set, id=request.POST['set_id'])
             set_obj.reps = request.POST['reps']
-            set_obj.weight=request.POST['weight']
-            
+            set_obj.weight = request.POST['weight']
+
             set_obj.save()
-            
+
         return redirect('workout_detail', id)
 
     elif request.method == 'GET':
@@ -57,7 +58,7 @@ def create_workout(request):
 
         if not todayWork:
             todayWork = workout.objects.create(user=request.user)
-            
+
         return redirect('workout_detail', todayWork.id)
 
     elif request.method == 'POST':
@@ -65,19 +66,28 @@ def create_workout(request):
 
 
 def create_setgroup(request, workout_id):
+
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
             'form': CreateSetGroupForm()
         })
 
     elif request.method == 'POST':
-        # validar que no exista ese ejercicio
         order = setgroup.objects.filter(workout=workout_id).count() + 1
-        
-        setgroup.objects.create(
-            workout_id=workout_id, exercise_id=request.POST['exercise'], notes=request.POST['notes'], order=order)
-        
+        form = CreateSetGroupForm(request.POST)
+
+        print(request.POST)
+
+        if form.is_valid():
+            setgroup_instance = form.save(commit=False)
+            setgroup_instance.workout_id = workout_id
+            setgroup_instance.order = order
+            setgroup_instance.save()
+        else:
+            print(form.errors)
+            
         return redirect('workout_detail', workout_id)
+        
 
 
 def delete_setgroup(request, pk):

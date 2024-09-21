@@ -85,10 +85,11 @@ class setgroup(models.Model):
     superset = models.ForeignKey('superset', on_delete=models.DO_NOTHING, blank=True, null=True)
     order = models.IntegerField(default=1)
     notes = models.TextField(max_length=200, blank=True, null=True)
-
     
-    # class Meta:
-    #     unique_together = ('workout', 'order')
+    class Meta:
+        unique_together = ['workout', 'exercise']
+        # unique_together = ('workout', 'order')
+        ordering = ['order'] 
         
     def __str__(self):
         return self.exercise.name
