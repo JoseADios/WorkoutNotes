@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from myapp.models import workout, setgroup, set
+from myapp.models import workout, setgroup, set, exercise
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
 from .forms import CreateSetGroupForm, CreateSetForm
 from .utils import reorder_setgroup_after_delete
-
+from django.db import IntegrityError
 # Create your views here.
 
 WORKOUT = 1
@@ -16,7 +16,7 @@ def hello(request):
 
 
 def workouts(request):
-    workouts = workout.objects.all()
+    workouts = workout.objects.all().order_by('-created_at')
     return render(request, 'workouts/workouts.html', {
         'workouts': workouts})
 
@@ -68,26 +68,28 @@ def create_workout(request):
 
 def create_setgroup(request, workout_id):
     error = ''
-
+    form = CreateSetGroupForm(request.POST or None, workout_id=workout_id)
+    
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
-            'form': CreateSetGroupForm(),
+            'form': form,
             'workout_id': workout_id,
         })
 
     elif request.method == 'POST':
         order = setgroup.objects.filter(workout_id=workout_id).count() + 1
-        form = CreateSetGroupForm(request.POST)
 
         try:
-            setgroup_instance = form.save(commit=False)
-            setgroup_instance.workout_id = workout_id
-            setgroup_instance.order = order
-            setgroup_instance.save()
-
+            setgroup.objects.bulk_create(
+                [
+                    setgroup(workout_id=workout_id, exercise_id=exercise_id, order=(order+i))
+                    for i, exercise_id in enumerate(request.POST.getlist('exercise'), start=0)
+                ]
+            )
             return redirect('workout_detail', workout_id)
-        except:
-            error = f'Error, el ejercicio ya existe: {form.errors}'
+        
+        except IntegrityError:
+            error = f'Error, el ejercicio ya existe: {request.POST.getlist("exercise")}'
 
         return render(request, 'setgroups/create.html', {
             'form': form,

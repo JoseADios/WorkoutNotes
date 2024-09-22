@@ -10,9 +10,8 @@
 <!-- url 'create_setgroup' workout.id, 1-->
 
 {% for setgroup in workout.setgroup_set.all %}
-<h3>SetGroup: {{setgroup.exercise.name}}</h3>
+<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button></h3>
 
-<button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button>
 <p>Order: {{setgroup.order}}</p>
 
 {% for set in setgroup.set_set.all %}
@@ -27,8 +26,8 @@
     <label for="reps">Reps</label>
 
     <button name="update_set" type="submit">☑️ Update</a></button>
+    <button><a href="{% url 'set_delete' workout.id set.id %}">❌ Delete </a></a></button>
 </form>
-<button><a href="{% url 'set_delete' workout.id set.id %}">❌ Delete </a></a></button>
 
 </p>
 
