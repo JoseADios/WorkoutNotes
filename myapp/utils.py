@@ -12,4 +12,17 @@ cuando se reordena recibir:
     3,  2
 """
 
-# funcion para ordenar
+# funcion para ordenar despues de eliminar
+
+def reorder_setgroup_after_delete(workout_id):
+    setgroups = setgroup.objects.filter(workout_id=workout_id).order_by('order')
+    print(setgroups)
+    for i in range(len(setgroups)):
+        print('Iteracion ', i+1)
+        if setgroups[i].order != i + 1:
+            print('No tiene el orden correcto ', setgroups[i].order)
+            setgroups[i].order = i + 1
+    
+    setgroups.update()
+    
+    print('ordered list ', setgroups)

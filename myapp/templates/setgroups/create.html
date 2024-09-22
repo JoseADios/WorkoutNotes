@@ -9,7 +9,9 @@
 <form method="post">
     {% csrf_token %}
     {{form}}
-    <button>Save</button>
+    <button>☑️ Save</button>
 </form>
+
+<button> <a href="{% url 'workout_detail' workout_id %}">❌ Cancel</a> </button>
 
 {% endblock content %}
