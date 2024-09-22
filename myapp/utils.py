@@ -23,6 +23,7 @@ def reorder_setgroup_after_delete(workout_id):
             print('No tiene el orden correcto ', setgroups[i].order)
             setgroups[i].order = i + 1
     
-    setgroups.update()
+    # update
+    setgroups.bulk_update(setgroups, ['order'])
     
     print('ordered list ', setgroups)
