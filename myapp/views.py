@@ -8,7 +8,7 @@ from .utils import reorder_setgroup_after_delete
 from django.db import IntegrityError
 # Create your views here.
 
-WORKOUT = 1
+REST_TIME = 120
 
 
 def hello(request):
@@ -49,6 +49,7 @@ def workout_detail(request, id):
             'set_form': CreateSetForm(),
             'edit_work': edit_work,
             'workout_form': UpdateWorkoutForm(workout_id=workout_object.id),
+            'rest_time': REST_TIME
         })
 
 
