@@ -2,15 +2,27 @@
 
 
 {% block content %}
+{% if edit_work %}
+<form action="{% url 'workout_update' workout.id %}" method="POST">
+    {% csrf_token %}
+    {{workout_form.as_p}}
+
+    <button type="submit">Guardar</button>
+</form>
+{% else %}
+<h1>Workout: {{ workout.created_at }}</h1>
+<h2>Notes: {{ workout.notes }}</h2>
+
+{{edit_work}}
+<a href="?edit=true"><button>✏️ Editar</button></a>
 
 
-<h1>Workout: {{workout.created_at}}</h1>
-<h2>Notes: {{workout.notes}}</h2>
-
+{% endif %}
 <!-- url 'create_setgroup' workout.id, 1-->
 
 {% for setgroup in workout.setgroup_set.all %}
-<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button></h3>
+<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button>
+</h3>
 
 <p>Order: {{setgroup.order}}</p>
 

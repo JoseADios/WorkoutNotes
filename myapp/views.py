@@ -3,7 +3,7 @@ from myapp.models import workout, setgroup, set, exercise
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
-from .forms import CreateSetGroupForm, CreateSetForm, CreateExerciseForm
+from .forms import CreateSetGroupForm, CreateSetForm, CreateExerciseForm, UpdateWorkoutForm
 from .utils import reorder_setgroup_after_delete
 from django.db import IntegrityError
 # Create your views here.
@@ -39,10 +39,16 @@ def workout_detail(request, id):
 
     elif request.method == 'GET':
         workout_object = workout.objects.get(id=id)
+        edit_work = False
+        
+        if 'edit' in request.GET:
+            edit_work = True 
 
         return render(request, 'workouts/detail.html', {
             'workout': workout_object,
-            'set_form': CreateSetForm()
+            'set_form': CreateSetForm(),
+            'edit_work': edit_work,
+            'workout_form': UpdateWorkoutForm(workout_id=workout_object.id),
         })
 
 
@@ -64,6 +70,16 @@ def create_workout(request):
 
     elif request.method == 'POST':
         return render(request, 'workouts/create_workout.html', {})
+
+
+def workout_update(request, workout_id):
+    workout_obj = get_object_or_404(workout, id=workout_id)
+
+    if request.method == 'POST':
+        workout_obj.created_at = request.POST.get('created_at')
+        workout_obj.notes = request.POST.get('notes')
+        workout_obj.save()
+        return redirect('workout_detail', id=workout_id)
 
 
 def create_setgroup(request, workout_id):

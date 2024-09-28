@@ -1,5 +1,5 @@
 from django import forms
-from .models import setgroup, set, exercise
+from .models import setgroup, set, exercise, workout
 
 
 class CreateSetGroupForm(forms.Form):
@@ -35,3 +35,15 @@ class CreateExerciseForm(forms.ModelForm):
     class Meta:
         model = exercise
         fields = ['name', 'description', 'type', 'muscle']
+        
+
+class UpdateWorkoutForm(forms.Form):
+    created_at = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    notes = forms.CharField(max_length=200, required=False)
+    
+
+    def __init__(self, *args, **kwargs):
+        workout_id = kwargs.pop('workout_id')
+        super(UpdateWorkoutForm, self).__init__(*args, **kwargs)
+        self.fields['created_at'].initial = workout.objects.get(id=workout_id).created_at
+        self.fields['notes'].initial = workout.objects.get(id=workout_id).notes
