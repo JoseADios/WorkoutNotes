@@ -3,7 +3,7 @@ from myapp.models import workout, setgroup, set, exercise
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
-from .forms import CreateSetGroupForm, CreateSetForm
+from .forms import CreateSetGroupForm, CreateSetForm, CreateExerciseForm
 from .utils import reorder_setgroup_after_delete
 from django.db import IntegrityError
 # Create your views here.
@@ -69,7 +69,7 @@ def create_workout(request):
 def create_setgroup(request, workout_id):
     error = ''
     form = CreateSetGroupForm(request.POST or None, workout_id=workout_id)
-    
+
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
             'form': form,
@@ -82,14 +82,16 @@ def create_setgroup(request, workout_id):
         try:
             setgroup.objects.bulk_create(
                 [
-                    setgroup(workout_id=workout_id, exercise_id=exercise_id, order=(order+i))
+                    setgroup(workout_id=workout_id,
+                             exercise_id=exercise_id, order=(order+i))
                     for i, exercise_id in enumerate(request.POST.getlist('exercise'), start=0)
                 ]
             )
             return redirect('workout_detail', workout_id)
-        
+
         except IntegrityError:
-            error = f'Error, el ejercicio ya existe: {request.POST.getlist("exercise")}'
+            error = f'Error, el ejercicio ya existe: {
+                request.POST.getlist("exercise")}'
 
         return render(request, 'setgroups/create.html', {
             'form': form,
@@ -108,3 +110,17 @@ def delete_setgroup(request, pk):
 def delete_set(request, pk, workout_id):
     set.objects.get(id=pk).delete()
     return redirect('workout_detail', workout_id)
+
+
+def create_exercise(request, workout_id):
+    if request.method == 'POST':
+        
+        post = request.POST
+        exercise_obj = exercise.objects.create(name= post['name'], description= post['description'], type=post['type'])
+        exercise_obj.muscle.set(post.getlist('muscle'))
+        
+        return redirect('create_setgroup', workout_id) 
+    else:
+        return render(request, 'exercises/create.html', {
+            'form': CreateExerciseForm()
+        })

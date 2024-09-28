@@ -9,5 +9,5 @@ urlpatterns = [
     path('setgroup/<int:workout_id>/create', views.create_setgroup, name='create_setgroup'),
     path('setgroup/<int:pk>/delete/', views.delete_setgroup, name='setgroup_delete'),   
     path('set/<int:workout_id>/<int:pk>/delete/', views.delete_set, name='set_delete'),   
-    
+    path('exercises/create/<int:workout_id>', views.create_exercise, name='create_exercise')
 ]

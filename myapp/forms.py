@@ -29,3 +29,9 @@ class CreateSetForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.required = True
+
+
+class CreateExerciseForm(forms.ModelForm):
+    class Meta:
+        model = exercise
+        fields = ['name', 'description', 'type', 'muscle']
