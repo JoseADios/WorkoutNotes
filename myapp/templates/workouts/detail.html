@@ -22,10 +22,11 @@
     <button type="submit">Guardar</button>
 </form>
 {% else %}
-<h1>Workout: {{ workout.created_at }}</h1>
+<h1>Workout: {{ workout.created_at }}
+    <a href="?edit=true"><button>✏️ Editar</button></a>
+</h1>
 <h2>Notes: {{ workout.notes }}</h2>
 
-<a href="?edit=true"><button>✏️ Editar</button></a>
 
 
 {% endif %}

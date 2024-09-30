@@ -9,8 +9,13 @@
     Aspernatur nisi dicta illum necessitatibus, explicabo ex adipisci vel numquam expedita quae! Est molestiae totam
     ullam doloremque incidunt soluta, fugiat, deleniti, unde eos accusamus dolorum.</p>
 
+{% if are_training %}
+<button><a href="{% url 'create_workout' %}">Continue workout</a></button>
 
+{% else %}
 <button><a href="{% url 'create_workout' %}">Create Workout</a></button>
+{% endif %}
+
 
 
 {% endblock content %}

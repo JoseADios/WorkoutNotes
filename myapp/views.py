@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from myapp.models import workout, setgroup, set, exercise
 from django.db.models.functions import Cast
 from django.db.models import DateField
@@ -11,8 +12,19 @@ from django.db import IntegrityError
 REST_TIME = 120
 
 
-def hello(request):
-    return render(request, 'index.html')
+def index(request):
+    are_training = False
+
+    todayWork = workout.objects.filter(created_at__date=timezone.localdate())
+
+    if len(todayWork) > 0:
+        are_training=True
+    
+    print(todayWork)
+    
+    return render(request, 'index.html', {
+        'are_training': are_training
+    })
 
 
 def workouts(request):
@@ -40,9 +52,9 @@ def workout_detail(request, id):
     elif request.method == 'GET':
         workout_object = workout.objects.get(id=id)
         edit_work = False
-        
+
         if 'edit' in request.GET:
-            edit_work = True 
+            edit_work = True
 
         return render(request, 'workouts/detail.html', {
             'workout': workout_object,
@@ -55,11 +67,9 @@ def workout_detail(request, id):
 
 def create_workout(request):
     if request.method == 'GET':
+        
         # si no hay workout para ese dia crea uno
-        today = datetime.now()
-
-        todayWork = workout.objects.annotate(date__only=Cast(
-            'created_at', DateField())).filter(date__only=today)
+        todayWork = workout.objects.filter(created_at__date=timezone.localdate())
 
         if len(todayWork) > 0:
             todayWork = todayWork[0]
@@ -131,12 +141,13 @@ def delete_set(request, pk, workout_id):
 
 def create_exercise(request, workout_id):
     if request.method == 'POST':
-        
+
         post = request.POST
-        exercise_obj = exercise.objects.create(name= post['name'], description= post['description'], type=post['type'])
+        exercise_obj = exercise.objects.create(
+            name=post['name'], description=post['description'], type=post['type'])
         exercise_obj.muscle.set(post.getlist('muscle'))
-        
-        return redirect('create_setgroup', workout_id) 
+
+        return redirect('create_setgroup', workout_id)
     else:
         return render(request, 'exercises/create.html', {
             'form': CreateExerciseForm()
