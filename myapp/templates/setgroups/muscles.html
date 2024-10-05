@@ -1,0 +1,8 @@
+<h1>Muscles</h1>
+
+
+{% for muscle in muscles %}
+<a href="{% url 'create_setgroup' workout_id muscle.id %}">
+    <h2>{{muscle}}</h2>
+</a>
+{% endfor %}

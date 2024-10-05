@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from myapp.models import workout, setgroup, set, exercise
+from myapp.models import workout, setgroup, set, exercise, muscle
 from django.db.models.functions import Cast
 from django.db.models import DateField
 from datetime import datetime
@@ -93,14 +93,22 @@ def workout_update(request, workout_id):
         return redirect('workout_detail', id=workout_id)
 
 
-def create_setgroup(request, workout_id):
+def select_muscle(request, workout_id):
+    return render(request, 'setgroups/muscles.html', {
+        'workout_id': workout_id,
+        'muscles': muscle.objects.all()
+    })
+
+def create_setgroup(request, workout_id, muscle_id):
     error = ''
-    form = CreateSetGroupForm(request.POST or None, workout_id=workout_id)
+    form = CreateSetGroupForm(request.POST or None, workout_id=workout_id, muscle=muscle_id)
+
 
     if request.method == 'GET':
         return render(request, 'setgroups/create.html', {
             'form': form,
             'workout_id': workout_id,
+            'muscle_id': muscle_id
         })
 
     elif request.method == 'POST':
@@ -139,7 +147,7 @@ def delete_set(request, pk, workout_id):
     return redirect('workout_detail', workout_id)
 
 
-def create_exercise(request, workout_id):
+def create_exercise(request, workout_id, muscle_id):
     if request.method == 'POST':
 
         post = request.POST
@@ -147,7 +155,7 @@ def create_exercise(request, workout_id):
             name=post['name'], description=post['description'], type=post['type'])
         exercise_obj.muscle.set(post.getlist('muscle'))
 
-        return redirect('create_setgroup', workout_id)
+        return redirect('create_setgroup', workout_id, muscle_id)
     else:
         return render(request, 'exercises/create.html', {
             'form': CreateExerciseForm()

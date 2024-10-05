@@ -4,9 +4,10 @@
 
 <h1>Add exercise</h1>
 
-<button> <a href="{% url 'create_exercise' workout_id %}">➕ New</a></button>
+<button> <a href="{% url 'create_exercise' workout_id muscle_id %}">➕ New</a></button>
 
 {{error}}
+
 
 <form method="post">
     {% csrf_token %}

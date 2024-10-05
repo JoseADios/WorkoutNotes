@@ -12,10 +12,11 @@ class CreateSetGroupForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         workout_id = kwargs.pop('workout_id')
+        muscle = kwargs.pop('muscle')
         super(CreateSetGroupForm, self).__init__(*args, **kwargs)
         
-        existing_exercises = setgroup.objects.filter(workout_id=workout_id).values_list('exercise_id', flat=True)
-        available_exercises = exercise.objects.exclude(id__in=existing_exercises)
+        existing_exercises = setgroup.objects.filter(workout_id=workout_id, exercise__muscle=muscle).values_list('exercise_id', flat=True)
+        available_exercises = exercise.objects.filter(muscle=muscle).exclude(id__in=existing_exercises)
         
         self.fields['exercise'].choices = available_exercises.values_list('id', 'name')
 
