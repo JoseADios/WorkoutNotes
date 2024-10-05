@@ -20,8 +20,6 @@ def index(request):
     if len(todayWork) > 0:
         are_training=True
     
-    print(todayWork)
-    
     return render(request, 'index.html', {
         'are_training': are_training
     })
@@ -40,7 +38,6 @@ def workout_detail(request, id):
                 setgroup_id=request.POST['setgroup_id'], reps=request.POST['reps'], weight=request.POST['weight']
             )
         elif 'update_set' in request.POST:
-            print(request.POST)
             set_obj = get_object_or_404(set, id=request.POST['set_id'])
             set_obj.reps = request.POST['reps']
             set_obj.weight = request.POST['weight']
@@ -87,10 +84,31 @@ def workout_update(request, workout_id):
     workout_obj = get_object_or_404(workout, id=workout_id)
 
     if request.method == 'POST':
-        workout_obj.created_at = request.POST.get('created_at')
-        workout_obj.notes = request.POST.get('notes')
-        workout_obj.save()
-        return redirect('workout_detail', id=workout_id)
+        
+        # si se cambia la fecha 
+        # si existe un workout en esa fecha 
+        # mover los setgroups a ese workout
+        # eliminar el actual
+        new_date = datetime.fromisoformat(request.POST.get('created_at')).date()
+        
+        if workout_obj.created_at != request.POST.get('created_at'):
+            existent_workout = workout.objects.filter(created_at__date=new_date)
+            
+            if existent_workout and existent_workout[0].id != workout_id:
+                existent_workout = existent_workout[0]
+                
+                setgroup.objects.filter(workout_id=workout_obj.id).update(workout=existent_workout)
+                    
+                workout_obj.delete()
+            
+                return redirect('workout_detail', existent_workout.id)
+            
+            else:
+                workout_obj.created_at = request.POST.get('created_at')
+                workout_obj.notes = request.POST.get('notes')
+                workout_obj.save()
+                
+                return redirect('workout_detail', id=workout_id)
 
 
 def select_muscle(request, workout_id):
