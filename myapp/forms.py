@@ -1,5 +1,5 @@
 from django import forms
-from .models import setgroup, set, exercise, workout
+from .models import setgroup, set, exercise, workout, muscle
 
 
 class CreateSetGroupForm(forms.Form):
@@ -33,9 +33,16 @@ class CreateSetForm(forms.ModelForm):
 
 
 class CreateExerciseForm(forms.ModelForm):
+    muscle = forms.ModelMultipleChoiceField(queryset=muscle.objects.all(), required=True, widget=forms.CheckboxSelectMultiple())
+
+    def __init__(self, *args, **kwargs):
+        muscle_id = kwargs.pop('muscle_id')
+        super().__init__(*args, **kwargs)
+        self.fields['muscle'].initial = [muscle.objects.get(id=muscle_id)]
+
     class Meta:
         model = exercise
-        fields = ['name', 'description', 'type', 'muscle']
+        fields = ['name', 'description', 'type']
         
 
 class UpdateWorkoutForm(forms.Form):
