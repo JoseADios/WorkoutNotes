@@ -132,6 +132,7 @@ def create_setgroup(request, workout_id, muscle_id):
             'form': form,
             'error': error,
             'workout_id': workout_id,
+            'muscle_id': muscle_id
         })
 
 
@@ -156,7 +157,9 @@ def create_exercise(request, workout_id, muscle_id):
         exercise_obj.muscle.set(post.getlist('muscle'))
 
         return redirect('create_setgroup', workout_id, muscle_id)
-    else:
+    elif request.method == 'GET':
         return render(request, 'exercises/create.html', {
-            'form': CreateExerciseForm()
+            'form': CreateExerciseForm(muscle_id=muscle_id),
+            'muscle_id': muscle_id,
+            'workout_id': workout_id
         })

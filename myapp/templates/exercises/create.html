@@ -4,4 +4,5 @@
     {% csrf_token %}
     {{form}}
     <button type="submit">☑️ Save</button>
+    <button><a href="{% url 'create_setgroup' workout_id muscle_id %}">❌ Cancel</a></button>
 </form>
