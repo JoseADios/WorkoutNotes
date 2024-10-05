@@ -47,7 +47,7 @@ class CreateExerciseForm(forms.ModelForm):
 
 class UpdateWorkoutForm(forms.Form):
     created_at = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-    notes = forms.CharField(max_length=200, required=False)
+    notes = forms.CharField(max_length=200, required=False, widget=forms.Textarea)
     
 
     def __init__(self, *args, **kwargs):

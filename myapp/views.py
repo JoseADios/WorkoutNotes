@@ -111,6 +111,10 @@ def workout_update(request, workout_id):
                 return redirect('workout_detail', id=workout_id)
 
 
+def workout_delete(request, pk):
+    workout.objects.get(id=pk).delete()
+    return redirect('workouts')
+
 def select_muscle(request, workout_id):
     return render(request, 'setgroups/muscles.html', {
         'workout_id': workout_id,

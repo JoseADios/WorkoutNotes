@@ -19,7 +19,10 @@
     {% csrf_token %}
     {{workout_form.as_p}}
 
-    <button type="submit">Guardar</button>
+    <button type="submit">☑️ Guardar</button>
+    <button><a href="{% url 'workout_detail' workout.id %}">❌ Cancel</a></button>
+    <button><a href="{% url 'workout_delete' workout.id %}">🗑️ Delete</a></button>
+
 </form>
 {% else %}
 <h1>Workout: {{ workout.created_at }}
@@ -33,7 +36,7 @@
 <!-- url 'create_setgroup' workout.id, 1-->
 
 {% for setgroup in workout.setgroup_set.all %}
-<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">❌ Delete</a></button>
+<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">🗑️ Delete</a></button>
 </h3>
 
 <p>Order: {{setgroup.order}}</p>
@@ -50,7 +53,7 @@
     <label for="reps">Reps</label>
 
     <button name="update_set" type="submit">☑️ Update</a></button>
-    <button><a href="{% url 'set_delete' workout.id set.id %}">❌ Delete </a></a></button>
+    <button><a href="{% url 'set_delete' workout.id set.id %}">🗑️ Delete </a></a></button>
 </form>
 
 </p>
