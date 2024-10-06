@@ -1,11 +1,23 @@
+window.onload = function () {
+    let timeEl = document.getElementById('timer')
+    let btnReset = document.getElementById('btnReset');
+
+    let storedTime = localStorage.getItem('restTimer');
+    if (storedTime) {
+        timeEl.textContent = storedTime
+        btnReset.hidden = false
+    }
+
+}
+    
 
 let intervalId;
 
 function startRestTimer(duration, display) {
 
-    btnStart = document.getElementById('btnStart');
-    btnPause = document.getElementById('btnPause');
-    btnReset = document.getElementById('btnReset');
+    let btnStart = document.getElementById('btnStart');
+    let btnPause = document.getElementById('btnPause');
+    let btnReset = document.getElementById('btnReset');
 
     btnStart.hidden = true;
     btnPause.hidden = false;

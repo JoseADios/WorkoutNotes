@@ -4,10 +4,10 @@
 <html lang="en">
 
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Workout Notes</title>
-  <script src="{% static 'js/counter.js' %}"></script> 
 </head>
 
 <body>
@@ -21,6 +21,10 @@
 
   {% block content %}
   {% endblock content %}
+
+  {% block extra_js %}
+  <!-- Aquí se incluirán los archivos JS adicionales -->
+  {% endblock %}
 </body>
 
 </html>

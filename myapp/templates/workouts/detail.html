@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
-
+<!-- 
 {% load static %}
-<script src="{% static 'js/workout_detail.js' %}"></script>
+<script src="{% static 'js/prueba.js' %}"></script> -->
 
 {% block content %}
 
@@ -77,3 +77,8 @@
 <button><a href="{% url 'select_muscle' workout.id %}">➕ Add exercise</a></button>
 
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/counter.js' %}"></script>
+<script src="{% static 'js/prueba.js' %}"></script>
+{% endblock %}
