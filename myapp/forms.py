@@ -20,6 +20,9 @@ class CreateSetGroupForm(forms.Form):
         
         self.fields['exercise'].choices = available_exercises.values_list('id', 'name')
 
+def get_last_set(setgroup_id):
+    setgroup = setgroup.objects.get(id=setgroup_id)
+    return setgroup.set_set.order_by('-id').first()
 
 class CreateSetForm(forms.ModelForm):
     class Meta:
@@ -28,6 +31,15 @@ class CreateSetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        exercise_id = kwargs.get('exercise_id')
+        print(exercise_id)
+        # setgroup_id = kwargs.get('setgroup_id')
+        # last_set = get_last_set(setgroup_id)
+    
+        # if last_set:
+        #     self.fields['weight'].initial = last_set.weight
+        #     self.fields['reps'].initial = last_set.reps
+            
         for field in self.fields.values():
             field.required = True
 

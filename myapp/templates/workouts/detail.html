@@ -8,11 +8,14 @@
 <p>
     ⏳ <b id="timer">{{ rest_time }}</b>
 
-    <p>
-        <button id="btnPause" hidden onclick="pauseRestTimer('{{ rest_time }}', document.querySelector('#timer'))">⏸️ Pause</button>
-        <button id="btnReset" hidden onclick="resetRestTimer('{{ rest_time }}', document.querySelector('#timer'))" type="reset">🔄️ Reset</button>
-        <button id="btnStart" onclick="startRestTimer('{{ rest_time }}', document.querySelector('#timer'))">▶️ Start</button>
-    </p>
+<p>
+    <button id="btnPause" hidden onclick="pauseRestTimer('{{ rest_time }}', document.querySelector('#timer'))">⏸️
+        Pause</button>
+    <button id="btnReset" hidden onclick="resetRestTimer('{{ rest_time }}', document.querySelector('#timer'))"
+        type="reset">🔄️ Reset</button>
+    <button id="btnStart" onclick="startRestTimer('{{ rest_time }}', document.querySelector('#timer'))">▶️
+        Start</button>
+</p>
 </p>
 {% if edit_work %}
 <form action="{% url 'workout_update' workout.id %}" method="POST">
@@ -31,46 +34,58 @@
 <h2>Notes: {{ workout.notes }}</h2>
 
 
-
 {% endif %}
 <!-- url 'create_setgroup' workout.id, 1-->
 
-{% for setgroup in workout.setgroup_set.all %}
-<h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">🗑️ Delete</a></button>
-</h3>
+{% for setgroup in setgroups %}
+<section class="setgroup">
 
-<p>Order: {{setgroup.order}}</p>
 
-{% for set in setgroup.set_set.all %}
-<p>
-<form method="post">
-    {% csrf_token %}
+    <h3>SetGroup: {{setgroup.exercise.name}} <button><a href="{% url 'setgroup_delete' setgroup.id %}">🗑️
+                Delete</a></button>
+    </h3>
 
-    <input type="hidden" name="set_id" value="{{set.id}}">
-    <input type="number" name="weight" value="{{set.weight}}">
-    <label for="weight">Weight</label>
-    <input type="number" name="reps" value="{{set.reps}}">
-    <label for="reps">Reps</label>
+    <p>Order: {{setgroup.order}}</p>
 
-    <button name="update_set" type="submit">☑️ Update</a></button>
-    <button><a href="{% url 'set_delete' workout.id set.id %}">🗑️ Delete </a></a></button>
-</form>
+    {% for set in setgroup.set_set.all %}
 
-</p>
+    <section id="set{{set.id}}">
+        <p>
+        <form method="post">
+            {% csrf_token %}
 
+            <input type="hidden" name="set_id" value="{{set.id}}">
+            <input type="number" name="weight" value="{{set.weight}}">
+            <label for="weight">Weight</label>
+            <input type="number" name="reps" value="{{set.reps}}">
+            <label for="reps">Reps</label>
+
+            <button name="update_set" type="submit">☑️ Update</a></button>
+            <button><a href="{% url 'set_delete' workout.id set.id %}">🗑️ Delete </a></a></button>
+        </form>
+
+        </p>
+    </section>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="fieldWrapper">
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" name="weight" required value="{{setgroup.last_set.0}}">
+        </div>
+        <div class="fieldWrapper">
+            <label for="reps">Reps:</label>
+            <input type="number" id="reps" name="reps" required value="{{setgroup.last_set.1}}">
+        </div>
+        <input type="hidden" name="setgroup_id" value="{{setgroup.id}}">
+        <button name="save_set" type="submit">☑️ Save </button>
+    </form>
+
+
+</section>
 {% endfor %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ set_form.as_p }}
-    <input type="num" hidden name="setgroup_id" value="{{setgroup.id}}">
-    <button name="save_set" type="submit">☑️ Save </button>
-    <!-- <button> ❌ Cancel </a></button> -->
-</form>
-
-
-
-{% endfor %}
 
 {{error}}
 
@@ -80,5 +95,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/counter.js' %}"></script>
-<script src="{% static 'js/prueba.js' %}"></script>
+<script src="{% static 'js/workout.js' %}"></script>
 {% endblock %}
