@@ -1,13 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from myapp.models import workout, setgroup, set, exercise, muscle
+from myapp.models import workout, setgroup, set, exercise, muscle, User
 from datetime import datetime
 from .forms import CreateSetGroupForm, CreateExerciseForm, UpdateWorkoutForm
 from .utils import reorder_setgroup_after_delete
 from django.db import IntegrityError
 # Create your views here.
-
-REST_TIME = 200
 
 
 def index(request):
@@ -72,7 +70,7 @@ def workout_detail(request, id):
             'setgroups': setgroups,
             'edit_work': edit_work,
             'workout_form': UpdateWorkoutForm(workout_id=id),
-            'rest_time': REST_TIME,
+            'rest_time': request.user.userprofile.rest_time,
         })
 
 

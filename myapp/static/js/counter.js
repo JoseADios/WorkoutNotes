@@ -1,42 +1,63 @@
-window.onload = function () {
-    let timeEl = document.getElementById('timer')
-    let btnReset = document.getElementById('btnReset');
+let intervalId;
+let startDate;
 
-    let storedTime = localStorage.getItem('restTimer');
-    if (storedTime) {
-        timeEl.textContent = storedTime
-        btnReset.hidden = false
+
+window.onload = function () {
+    let inputTime = document.getElementById('input-time');
+    let restime = localStorage.getItem('restTime');
+    let timeEl = document.getElementById('timer')
+
+    if (localStorage.getItem('counterInProgress') === 'true') {
+
+        if (localStorage.getItem('counterPaused') === 'true') {
+
+            timeEl.textContent = restime;
+            inputTime.value = restime;
+
+        } else {
+
+            startDate = new Date(parseInt(localStorage.getItem('startDateTime')));
+            let currentTime = new Date();
+            let difference = (currentTime - startDate) / 1000;
+
+            let remainingTime = restime - difference;
+
+            if (remainingTime > 0) {
+                inputTime.value = remainingTime;
+                startRestTimer(timeEl);
+            } else {
+                resetRestTimer(timeEl);
+            }
+        }
+
+    }
+}
+
+
+function startRestTimer(display) {
+
+    inputTime = document.getElementById('input-time');
+    startDate = new Date();
+    localStorage.setItem('startDateTime', startDate.getTime());
+    localStorage.setItem('counterInProgress', true);
+    duration = parseInt(inputTime.value);
+
+    localStorage.setItem('restTime', duration);
+
+    if (localStorage.getItem('counterPaused') === 'true') {
+        localStorage.setItem('counterPaused', false);
+        duration = parseInt(inputTime.value) - (new Date() - startDate) / 1000;
     }
 
-}
-    
-
-let intervalId;
-
-function startRestTimer(duration, display) {
-
-    let btnStart = document.getElementById('btnStart');
-    let btnPause = document.getElementById('btnPause');
-    let btnReset = document.getElementById('btnReset');
-
-    btnStart.hidden = true;
-    btnPause.hidden = false;
-    btnReset.hidden = false;
+    counterEditMode(false)
 
     if (intervalId) {
         clearInterval(intervalId);
     }
 
-    let storedTime = localStorage.getItem('restTimer');
-    if (storedTime) {
-        duration = parseInt(storedTime);
-    }
-
     let timer = duration, minutes, seconds;
 
     intervalId = setInterval(function () {
-        minutes = Math.floor(timer / 60);  // Calcular los minutos
-        seconds = timer % 60;  // Calcular los segundos
 
         display.textContent = timer;
 
@@ -47,38 +68,76 @@ function startRestTimer(duration, display) {
             display.textContent = duration;
             clearInterval(intervalId);
             intervalId = null;
+            inputTime.value = duration;
+            counterEditMode(true)
+
+            localStorage.setItem('counterInProgress', false);
         }
     }, 1000);  // Cada segundo
 }
 
-function pauseRestTimer(duration, display) {
+function pauseRestTimer() {
     if (intervalId) {
         clearInterval(intervalId);
         intervalId = null;
+        let display = document.getElementById('timer')
+
+        localStorage.setItem('restTime', display.textContent);
+        localStorage.setItem('counterPaused', true);
+        inputTime.value = display.textContent;
     }
 
-    btnPause = document.getElementById('btnPause');
-    btnReset = document.getElementById('btnReset');
-    btnStart = document.getElementById('btnStart');
+    let btnPause = document.getElementById('btnPause');
+    let btnStart = document.getElementById('btnStart');
 
     btnPause.hidden = true;
     btnStart.hidden = false;
-    btnReset.hidden = true;
 }
 
 // reset method
-function resetRestTimer(duration, display) {
-    btnReset = document.getElementById('btnReset');
-    btnStart = document.getElementById('btnStart');
-    btnPause = document.getElementById('btnPause');
+function resetRestTimer(display) {
 
-    btnPause.hidden = true;
-    btnStart.hidden = false;
-    btnReset.hidden = true;
+    inputTime = document.getElementById('input-time');
+    duration = parseInt(localStorage.getItem('default_restTimer'))
+
+    counterEditMode(true)
 
     clearInterval(intervalId);
     intervalId = null;
     display.textContent = duration;
+    inputTime.value = duration;
 
-    localStorage.removeItem('restTimer');
+    // localStorage.removeItem('restTimer');
+    localStorage.removeItem('startDateTime');
+    localStorage.setItem('counterInProgress', false);
+}
+
+function minTime() {
+    inputTime = document.getElementById('input-time');
+    inputTime.value = inputTime.value - 10
+}
+
+function addTime() {
+    inputTime = document.getElementById('input-time');
+    inputTime.value = parseInt(inputTime.value) + 10
+}
+
+function counterEditMode(actived) {
+    btnStart = document.getElementById('btnStart');
+    btnPause = document.getElementById('btnPause');
+    btnReset = document.getElementById('btnReset');
+    inputTimeBase = document.getElementById('base-input-time');
+    baseTimer = document.getElementById('base-timer');
+
+    inputTimeBase.hidden = !actived;
+    baseTimer.hidden = actived;
+    btnStart.hidden = !actived;
+    btnPause.hidden = actived;
+    btnReset.hidden = actived;
+}
+
+function setDefaultTIme() {
+    let inputTime = document.getElementById('input-time');
+    localStorage.setItem('default_restTimer', inputTime.value)
+
 }

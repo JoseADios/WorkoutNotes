@@ -1,20 +1,31 @@
 {% extends 'layouts/base.html' %}
-<!-- 
+
 {% load static %}
-<script src="{% static 'js/prueba.js' %}"></script> -->
 
 {% block content %}
 
 <p>
-    ⏳ <b id="timer">{{ rest_time }}</b>
+
+
+<div id="base-input-time">
+    ⏳
+    <button onclick="minTime()" id="minus-time">➖</button>
+    <input type="number" style="width: 40px;" value="{{ rest_time }}" name="input-time" id="input-time">
+    <button onclick="addTime()" id="add-time">➕</button>
+    <button onclick="setDefaultTIme()" id="default-time">🔒</button>
+</div>
+
+<div hidden id="base-timer">
+    ⏳<b id="timer"></b>
+</div>
 
 <p>
-    <button id="btnPause" hidden onclick="pauseRestTimer('{{ rest_time }}', document.querySelector('#timer'))">⏸️
+    <button id="btnPause" hidden onclick="pauseRestTimer()">⏸️
         Pause</button>
-    <button id="btnReset" hidden onclick="resetRestTimer('{{ rest_time }}', document.querySelector('#timer'))"
-        type="reset">🔄️ Reset</button>
-    <button id="btnStart" onclick="startRestTimer('{{ rest_time }}', document.querySelector('#timer'))">▶️
+    <button id="btnStart" onclick="startRestTimer(document.querySelector('#timer'))">▶️
         Start</button>
+    <button id="btnReset" hidden onclick="resetRestTimer(document.querySelector('#timer'))" type="reset">🔄️
+        Reset</button>
 </p>
 </p>
 {% if edit_work %}
