@@ -96,7 +96,6 @@ function pauseRestTimer() {
 
 // reset method
 function resetRestTimer(display) {
-
     inputTime = document.getElementById('input-time');
     duration = parseInt(localStorage.getItem('default_restTimer'))
 
@@ -104,6 +103,7 @@ function resetRestTimer(display) {
 
     clearInterval(intervalId);
     intervalId = null;
+    
     display.textContent = duration;
     inputTime.value = duration;
 
