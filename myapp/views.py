@@ -5,6 +5,7 @@ from datetime import datetime
 from .forms import CreateSetGroupForm, CreateExerciseForm, UpdateWorkoutForm
 from .utils import reorder_setgroup_after_delete
 from django.db import IntegrityError
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 
@@ -19,6 +20,23 @@ def index(request):
     return render(request, 'index.html', {
         'are_training': are_training
     })
+
+
+def sign_in(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    
+    elif request.method == 'POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+        else:
+            return redirect('sign_in', {'error': 'Credenciales inválidas'})
+            
 
 
 def workouts(request):

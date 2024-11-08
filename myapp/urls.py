@@ -12,5 +12,6 @@ urlpatterns = [
     path('setgroup/<int:workout_id>/select_muscle', views.select_muscle, name='select_muscle'),
     path('setgroup/<int:pk>/delete/', views.delete_setgroup, name='setgroup_delete'),   
     path('set/<int:workout_id>/<int:pk>/delete/', views.delete_set, name='set_delete'),   
-    path('exercises/<int:workout_id>/<int:muscle_id>/create/', views.create_exercise, name='create_exercise')
+    path('exercises/<int:workout_id>/<int:muscle_id>/create/', views.create_exercise, name='create_exercise'),
+    path('sign_in', views.sign_in, name='sign_in'),
 ]

@@ -16,9 +16,25 @@
 <body>
 
   <nav>
-    <ul>
+    <ul style="display: flex; justify-content: space-evenly;">
       <li><a href="{% url 'index' %}">Home</a></li>
       <li><a href="{% url 'workouts' %}">Workouts</a></li>
+      {% if user.is_authenticated %}
+      <li style="align-self: flex-end;">
+        {{user.username}}
+      </li>
+      <li>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Log Out</button>
+        </form>
+      </li>
+        
+      {% else %}
+      <li>
+        <a href="accounts/login">Login</a>
+      </li>
+      {% endif %}
     </ul>
   </nav>
 
